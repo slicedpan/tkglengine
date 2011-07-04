@@ -71,7 +71,7 @@ namespace tkglengine
 			}
 		}
 		
-		private void PopulateMesh()
+		private void PopulateMesh(bool smooth)
 		{
 			int offset = 0;
 			
@@ -150,7 +150,7 @@ namespace tkglengine
 							sourceData = sources[semantics["NORMAL"].SourceName].data;
 							sourceStride = sources[semantics["NORMAL"].SourceName].stride;
 						
-							Populate(sourceData, normalIndex * sourceStride, datArray, 2, 3);
+							Populate(sourceData, normalIndex * sourceStride, datArray, 3, 3);
 						
 							sourceData = sources[semantics["TEXCOORD"].SourceName].data;
 							sourceStride = sources[semantics["TEXCOORD"].SourceName].stride;
@@ -202,7 +202,7 @@ namespace tkglengine
 			var accessorNode = nav.SelectSingleNode("c:technique_common/c:accessor", nsManager);			
 			uint.TryParse(accessorNode.GetAttribute("stride", nsName), out sources[sourceName].stride);
 		}		
-		private void ParseMesh(XPathNavigator nav)
+		private void ParseMesh(XPathNavigator nav, bool smooth)
 		{			
 			var sourceIterator = nav.Select("c:source", nsManager);
 			while (sourceIterator.MoveNext())
@@ -291,12 +291,17 @@ namespace tkglengine
 				uint.TryParse(parts[i], out indices[i]);
 			}		
 			
-			PopulateMesh();
+			PopulateMesh(smooth);
+			
+			if (smooth)
+			{
+				
+			}			
 			
 			Console.WriteLine("Finished Parsing Mesh");
 		}
 		
-		public Mesh Parse(XPathNavigator nav, string geomName)
+		public Mesh Parse(XPathNavigator nav, string geomName, bool smooth = false)
 		{
 			
 			Name = geomName;
@@ -306,7 +311,7 @@ namespace tkglengine
 			if (mesh == null)
 				throw new GeometryParserException("Geometry does not contain mesh!");
 			
-			ParseMesh(mesh);
+			ParseMesh(mesh, smooth);
 			
 			CreateArrays();
 			

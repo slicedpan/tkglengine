@@ -43,6 +43,7 @@
     <Compile Include="Source\TestWindow.cs" />
     <Compile Include="Source\VertexDeclaration.cs" />
     <Compile Include="Source\Paths.cs" />
+    <Compile Include="Source\Easing.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Xml" />

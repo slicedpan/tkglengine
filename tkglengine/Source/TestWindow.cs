@@ -20,6 +20,8 @@ namespace tkglengine
 		int wvp;
 		double counter = 0;
 		Matrix4 WVP;
+		Matrix4 WV;
+		Matrix4 InverseProj;
 		Vector3[] vertices;
 		Mesh mesh;
 		Vector3 cameraPosition;
@@ -28,9 +30,10 @@ namespace tkglengine
 		int mouseX = 400;
 		int mouseY = 300;
 		MouseState lastState;
+		Vector2 lastDelta = Vector2.Zero;
 		
 		public TestWindow () : 
-			base (1920, 1080, GraphicsMode.Default, "test", GameWindowFlags.Fullscreen)
+			base (640, 480, GraphicsMode.Default, "test", GameWindowFlags.Default)
 		{
 			
 			GL.ClearColor(Color4.Wheat);
@@ -38,7 +41,7 @@ namespace tkglengine
 			WVP = Matrix4.Identity;
 			cameraPosition = Vector3.UnitZ * - 10.0f;
 			cameraOrientation = Vector2.Zero;
-			projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 4.0f / 3.0f, 1.0f, 1000.0f);
+			projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 4.0f / 3.0f, 0.01f, 100.0f);
 			lastState = new MouseState();
 			Paths.Init();
 		}
@@ -95,14 +98,54 @@ namespace tkglengine
 				cameraOrientation.Y -= 0.02f;
 			
 			var state = OpenTK.Input.Mouse.GetState();
-			cameraOrientation.X += (float)(state.Y - lastState.Y) / 100.0f;
-			cameraOrientation.Y -= (float)(state.X - lastState.X) / 100.0f;
+			
+			Vector2 mouseDelta = new Vector2((float)(state.Y - lastState.Y), (float)(lastState.X - state.X));			
+			
+			if (mouseDelta.Length > 0.001f)
+			{
+				mouseDelta.Normalize();				
+			}
+
+			Easing.Logarithmic(ref lastDelta.X, mouseDelta.X, 1.0f);
+			Easing.Logarithmic(ref lastDelta.Y, mouseDelta.Y, 1.0f);			                   
+			
+			/*			
+			if (mouseDelta.X > lastDelta.X + 0.02f)
+			{
+				lastDelta.X += 0.02f;
+			}
+			else if (mouseDelta.X < lastDelta.X - 0.03f)
+			{
+				lastDelta.X -= 0.03f;
+			}
+			else
+			{
+				lastDelta.X = mouseDelta.X;
+			}
+			
+			if (mouseDelta.Y > lastDelta.Y + 0.02f)
+			{
+				lastDelta.Y += 0.02f;
+			}
+			else if (mouseDelta.Y < lastDelta.Y - 0.03f)
+			{
+				lastDelta.Y -= 0.03f;
+			}
+			else
+			{
+				lastDelta.Y = mouseDelta.Y;
+			}
+			*/
+			
+			cameraOrientation += lastDelta * 0.05f;
 			
 			lastState = state;
 			
-			OpenTK.Input.Mouse.SetPosition((double)mouseX, (double)mouseY);			
+			//OpenTK.Input.Mouse.SetPosition((double)mouseX, (double)mouseY);				
 
 			WVP = world * view * projection;
+			WV = world * view;
+			InverseProj = Matrix4.Invert(projection);
 			
 			base.OnUpdateFrame (e);
 		}
@@ -110,12 +153,14 @@ namespace tkglengine
 		
 		protected override void OnRenderFrame (FrameEventArgs e)
 		{
-			GL.Clear(ClearBufferMask.ColorBufferBit);			
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);			
 
 			GL.UseProgram(shader.Handle);
 			GL.UniformMatrix4(shader.uniforms["WVP"], false, ref WVP);
+			//GL.UniformMatrix4(shader.uniforms["InverseProj"], false, ref InverseProj);
 			counter += 0.01f;
-			Vector3 lightpos = new Vector3((float)Math.Sin(counter), (float)Math.Cos(counter), 0.0f);			
+			Vector3 lightpos = new Vector3((float)Math.Sin(counter), (float)Math.Cos(counter), 0.0f);
+			lightpos *= 10.0f;
 			GL.Uniform3(shader.uniforms["LightPos"], lightpos);
 			GL.EnableVertexAttribArray(0);	
 			GL.EnableVertexAttribArray(1);
@@ -136,11 +181,13 @@ namespace tkglengine
 			
 			ColladaXML daeReader = new ColladaXML("collada_schema_1_4.xsd");
 			Console.WriteLine("Parsing File...");
-			daeReader.Parse("test.dae");
-			mesh = daeReader.Meshes[0];
+			daeReader.Parse("face.dae");
+			mesh = daeReader.Meshes[2];
 			
 			GL.ClearColor(Color4.Wheat);
 			GL.Enable(EnableCap.CullFace);
+			GL.Enable(EnableCap.DepthTest);
+			GL.DepthFunc(DepthFunction.Lequal);
 			GL.CullFace(CullFaceMode.Back);
 			shader = new Shader("hello-gl.v.glsl", "hello-gl.f.glsl");
 			
@@ -148,12 +195,16 @@ namespace tkglengine
 			GL.BindBuffer(BufferTarget.ArrayBuffer, buf);
 			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.VertexBuffer.Length * sizeof(float)), mesh.VertexBuffer, BufferUsageHint.StaticDraw);
 			
-			CreateShaders();			
+			CreateShaders();	
+			mouseX = X + (Width / 2);
+			mouseY = Y + (Height / 2);
+			
+			CursorVisible = false;
 			
 			OpenTK.Input.Mouse.SetPosition((double)mouseX, (double)mouseY);
 			lastState = OpenTK.Input.Mouse.GetState();
 			
-			//CursorVisible = false;
+			CursorVisible = false;
 			
 			base.OnLoad (e);
 		}
