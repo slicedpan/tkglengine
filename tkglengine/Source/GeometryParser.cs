@@ -1,11 +1,11 @@
-
 using System;
 using System.Xml;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Xml.XPath;
-namespace Gametest
+
+namespace tkglengine
 {
 	public class GeometryParserException : Exception
 	{

@@ -1,12 +1,36 @@
 using System;
 using OpenTK.Graphics.OpenGL;
 
-namespace Gametest
+namespace tkglengine
 {
 	public class Mesh
 	{
 		float[] _vertexBuffer;
 		uint[] _indexBuffer;
+		int _vertexCount;
+		
+		public int VertexCount
+		{
+			get {return _vertexCount;}
+		}
+
+		public int Stride
+		{
+			get
+			{
+				switch (_vertexDeclaration)
+				{
+				case VertexDeclaration.Position:
+					return 3;
+				case VertexDeclaration.PositionNormal:
+					return 6;
+				case VertexDeclaration.PositionNormalTexture:
+					return 8;
+				default:
+					throw new Exception("Vertex Declaration does not provide a stride");
+				}
+			}
+		}
 		public float[] VertexBuffer
 		{
 			get {return _vertexBuffer;}
@@ -27,6 +51,7 @@ namespace Gametest
 		{
 			_vertexBuffer = vertexData;
 			_vertexDeclaration = vertexDeclaration;
+			_vertexCount = vertexData.Length / Stride;
 		}
 	}
 }

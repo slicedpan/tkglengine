@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using System.Collections.Generic;
 
-namespace Gametest
+namespace tkglengine
 {	
 	public interface IVertex
 	{
@@ -34,7 +34,7 @@ namespace Gametest
 		#region IVertex implementation
 		float[] IVertex.ToArray ()
 		{
-			float[] array = new float[8];
+			float[] array = new float[6];
 			array[0] = Position.X;
 			array[1] = Position.Y;
 			array[2] = Position.Z;

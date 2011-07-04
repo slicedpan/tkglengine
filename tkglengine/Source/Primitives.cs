@@ -1,5 +1,6 @@
 using System;
-namespace Gametest
+
+namespace tkglengine
 {
 	public struct Triangle : IPoly
 	{

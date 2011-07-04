@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
-namespace Gametest
+namespace tkglengine
 {
 	public class ColladaXML
 	{
@@ -20,19 +20,8 @@ namespace Gametest
 		float UnitConversionFactor = 1.0f;
 		
 		public ColladaXML (string schemaFileName)
-		{
-			colladaSchema = new XmlSchemaSet();			
-			Meshes = new List<Mesh>();
-			//colladaSchema.Add(null, "http://www.khronos.org/files/collada_schema_1_4");
-			schema = XmlSchema.Read(new FileStream(schemaFileName, FileMode.Open), delegate { });
-			Console.WriteLine("Schema: " + schema.ToString());
-			colladaSchema.Add(schema);			
-			settings = new XmlReaderSettings();
-			settings.ValidationType = ValidationType.Schema;			
-			settings.Schemas.Add(colladaSchema);			
-			settings.ValidationEventHandler += delegate {
-				throw new Exception("xml failed validation!");
-			};			
+		{			
+			Meshes = new List<Mesh>();			
 		}
 		
 		public float GetConversionFactor(string originalUnit)
@@ -75,7 +64,7 @@ namespace Gametest
 		{		
 			bool failed = false;
 			XmlDocument doc = new XmlDocument();
-			doc.Load(XmlFileName);		
+			doc.Load(Paths.ModelPath + XmlFileName);		
 			nsManager = new XmlNamespaceManager(doc.NameTable);
 			nsManager.AddNamespace("c", "http://www.collada.org/2005/11/COLLADASchema");
 			

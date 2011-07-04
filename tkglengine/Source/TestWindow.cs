@@ -9,8 +9,8 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using OpenTK.Input;
 
-namespace Gametest
-{
+namespace tkglengine
+{	
 	public class TestWindow : GameWindow
 	{
 		uint buf, buf2;
@@ -30,8 +30,9 @@ namespace Gametest
 		MouseState lastState;
 		
 		public TestWindow () : 
-			base (800, 600, GraphicsMode.Default, "Test")
+			base (1920, 1080, GraphicsMode.Default, "test", GameWindowFlags.Fullscreen)
 		{
+			
 			GL.ClearColor(Color4.Wheat);
 			Keyboard.KeyDown += HandleKeyboardKeyDown;
 			WVP = Matrix4.Identity;
@@ -39,6 +40,7 @@ namespace Gametest
 			cameraOrientation = Vector2.Zero;
 			projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 4.0f / 3.0f, 1.0f, 1000.0f);
 			lastState = new MouseState();
+			Paths.Init();
 		}
 
 			void HandleKeyboardKeyDown (object sender, OpenTK.Input.KeyboardKeyEventArgs e)
@@ -98,8 +100,7 @@ namespace Gametest
 			
 			lastState = state;
 			
-			OpenTK.Input.Mouse.SetPosition((double)mouseX, (double)mouseY);
-			
+			OpenTK.Input.Mouse.SetPosition((double)mouseX, (double)mouseY);			
 
 			WVP = world * view * projection;
 			
@@ -147,10 +148,12 @@ namespace Gametest
 			GL.BindBuffer(BufferTarget.ArrayBuffer, buf);
 			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.VertexBuffer.Length * sizeof(float)), mesh.VertexBuffer, BufferUsageHint.StaticDraw);
 			
-			CreateShaders();
+			CreateShaders();			
 			
 			OpenTK.Input.Mouse.SetPosition((double)mouseX, (double)mouseY);
 			lastState = OpenTK.Input.Mouse.GetState();
+			
+			//CursorVisible = false;
 			
 			base.OnLoad (e);
 		}
@@ -210,6 +213,12 @@ void main()
 				throw new Exception("could not get uniform location");
 			
 		}
+		public static void Main()
+		{
+			var window = new TestWindow();
+			window.Run(60);
+		}
+		
 	}
 }
 

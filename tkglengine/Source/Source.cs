@@ -1,5 +1,6 @@
 using System;
-namespace Gametest
+
+namespace tkglengine
 {
 	public class Source
 	{
