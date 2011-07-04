@@ -17,7 +17,6 @@ namespace tkglengine
 	{
 		#region fields
 		float[] vertexData;
-
 		uint[] indices;
 		Dictionary <string, Source> sources;
 		Dictionary <string, Semantic> semantics;
@@ -76,8 +75,7 @@ namespace tkglengine
 			int offset = 0;
 			
 			tris = new Triangle[triCount];
-			int triPos = 0;
-			
+			int triPos = 0;			
 			
 			switch (_vertexDeclaration)
 			{
