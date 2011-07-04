@@ -70,6 +70,63 @@ namespace tkglengine
 			}
 		}
 		
+		private void PopulatePositionNormal(bool smooth)
+		{
+			int offset = 0;
+			tris = new Triangle[triCount];
+			int triPos = 0;
+			
+			stride = 6;
+			
+			List<uint> existingIndices;
+			
+			for (uint i = 0; i < polyVertexCount.Length; ++i)
+			{
+				IPoly poly;
+			
+				if (polyVertexCount[i] == 3)						
+					poly = new Triangle();
+				else						
+					poly = new Quad();
+				
+				for (uint j = 0; j < polyVertexCount[i]; ++j)
+				{
+					uint posIndex = indices[(semantics.Count * offset) + semantics["VERTEX"].Offset];
+					uint normalIndex = indices[(semantics.Count * offset) + semantics["NORMAL"].Offset];
+					float[] datArray = new float[6];
+					float[] sourceData = sources[semantics["VERTEX"].SourceName].data;
+					uint sourceStride = sources[semantics["VERTEX"].SourceName].stride;
+				
+					Populate(sourceData, posIndex * sourceStride, datArray, 0, 3);
+					
+					sourceData = sources[semantics["NORMAL"].SourceName].data;
+					sourceStride = sources[semantics["NORMAL"].SourceName].stride;
+				
+					Populate(sourceData, normalIndex * sourceStride, datArray, 3, 3);
+				
+					poly[j] = new VertexPositionNormal();		
+					poly[j].FromArray(datArray);
+					++offset;							
+				}
+				if (polyVertexCount[i] == 4)
+				{
+					Triangle[] quadTris = PrimitiveHelper.ToTriangles(poly);
+					quadTris.CopyTo(tris, triPos);						
+					triPos += 2;
+				}
+				else
+				{
+					tris[triPos] = (Triangle)poly;
+					++triPos;
+				}
+			}
+		}
+		
+		private void PopulatePositionNormalTexture(bool smooth)
+		{
+			
+		}
+		
 		private void PopulateMesh(bool smooth)
 		{
 			int offset = 0;
@@ -80,47 +137,7 @@ namespace tkglengine
 			switch (_vertexDeclaration)
 			{
 				case VertexDeclaration.PositionNormal:
-					stride = 6;
-					for (uint i = 0; i < polyVertexCount.Length; ++i)
-					{
-						IPoly poly;
-					
-						if (polyVertexCount[i] == 3)						
-							poly = new Triangle();
-						else						
-							poly = new Quad();
-						
-						for (uint j = 0; j < polyVertexCount[i]; ++j)
-						{
-							uint posIndex = indices[(semantics.Count * offset) + semantics["VERTEX"].Offset];
-							uint normalIndex = indices[(semantics.Count * offset) + semantics["NORMAL"].Offset];
-							float[] datArray = new float[6];
-							float[] sourceData = sources[semantics["VERTEX"].SourceName].data;
-							uint sourceStride = sources[semantics["VERTEX"].SourceName].stride;
-						
-							Populate(sourceData, posIndex * sourceStride, datArray, 0, 3);
-							
-							sourceData = sources[semantics["NORMAL"].SourceName].data;
-							sourceStride = sources[semantics["NORMAL"].SourceName].stride;
-						
-							Populate(sourceData, normalIndex * sourceStride, datArray, 3, 3);
-						
-							poly[j] = new VertexPositionNormal();		
-							poly[j].FromArray(datArray);
-							++offset;							
-						}
-						if (polyVertexCount[i] == 4)
-						{
-							Triangle[] quadTris = PrimitiveHelper.ToTriangles(poly);
-							quadTris.CopyTo(tris, triPos);						
-							triPos += 2;
-						}
-						else
-						{
-							tris[triPos] = (Triangle)poly;
-							++triPos;
-						}
-					}
+					PopulatePositionNormal(smooth);
 					break;
 				
 				case VertexDeclaration.PositionNormalTexture:

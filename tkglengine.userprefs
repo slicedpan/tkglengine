@@ -1,16 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="tkglengine/Shaders/hello-gl.v.glsl" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="tkglengine/Source/GeometryParser.cs" ctype="Workbench">
     <Files>
-      <File FileName="tkglengine/Source/TestWindow.cs" Line="143" Column="34" />
-      <File FileName="tkglengine/Source/Mesh.cs" Line="4" Column="21" />
+      <File FileName="tkglengine/Source/TestWindow.cs" Line="159" Column="62" />
+      <File FileName="tkglengine/Source/Mesh.cs" Line="38" Column="28" />
       <File FileName="tkglengine/Source/VertexDeclaration.cs" Line="7" Column="21" />
       <File FileName="tkglengine/Source/ColladaXML.cs" Line="67" Column="31" />
-      <File FileName="tkglengine/Source/GeometryParser.cs" Line="22" Column="37" />
+      <File FileName="tkglengine/Source/GeometryParser.cs" Line="72" Column="3" />
       <File FileName="tkglengine/Source/Primitives.cs" Line="3" Column="21" />
-      <File FileName="tkglengine/Source/Shader.cs" Line="29" Column="1" />
-      <File FileName="tkglengine/Shaders/hello-gl.v.glsl" Line="16" Column="42" />
-      <File FileName="tkglengine/Shaders/hello-gl.f.glsl" Line="9" Column="30" />
+      <File FileName="tkglengine/Source/Shader.cs" Line="24" Column="4" />
+      <File FileName="tkglengine/Shaders/hello-gl.v.glsl" Line="6" Column="18" />
+      <File FileName="tkglengine/Shaders/hello-gl.f.glsl" Line="14" Column="46" />
       <File FileName="tkglengine/Source/Paths.cs" Line="26" Column="1" />
       <File FileName="tkglengine/Source/Source.cs" Line="3" Column="21" />
       <File FileName="tkglengine/Source/Semantic.cs" Line="3" Column="21" />
@@ -19,10 +19,10 @@
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="tkglengine" expanded="True">
-            <Node name="Shaders" expanded="True">
-              <Node name="hello-gl.v.glsl" selected="True" />
+            <Node name="Shaders" expanded="True" />
+            <Node name="Source" expanded="True">
+              <Node name="Paths.cs" selected="True" />
             </Node>
-            <Node name="Source" expanded="True" />
           </Node>
         </State>
       </Pad>
@@ -31,5 +31,8 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore">
+    <Watch file="tkglengine/Source/TestWindow.cs" line="106" offsetX="536" offsetY="1470" expression="lastDelta" liveUpdate="False" />
+    <Watch file="tkglengine/Source/TestWindow.cs" line="102" offsetX="361" offsetY="1414" expression="mouseDelta" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>
