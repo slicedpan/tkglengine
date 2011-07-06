@@ -33,15 +33,8 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="Source\ColladaXML.cs" />
-    <Compile Include="Source\GeometryParser.cs" />
-    <Compile Include="Source\Mesh.cs" />
-    <Compile Include="Source\Primitives.cs" />
-    <Compile Include="Source\Semantic.cs" />
     <Compile Include="Source\Shader.cs" />
-    <Compile Include="Source\Source.cs" />
     <Compile Include="Source\TestWindow.cs" />
-    <Compile Include="Source\VertexDeclaration.cs" />
     <Compile Include="Source\Paths.cs" />
     <Compile Include="Source\Easing.cs" />
   </ItemGroup>
@@ -55,6 +48,14 @@
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\code\c#\monolibs\opentk\Binaries\OpenTK\Debug\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="ModelMesh, Version=1.0.4204.39984, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ModelMesh\ModelMesh\bin\Debug\ModelMesh.dll</HintPath>
+    </Reference>
+    <Reference Include="ColladaImporter, Version=1.0.4204.40997, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ModelMesh\ColladaImporter\bin\Debug\ColladaImporter.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,8 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using OpenTK.Input;
+using ModelMesh;
+using ColladaImporter;
 
 namespace tkglengine
 {	
@@ -23,7 +25,7 @@ namespace tkglengine
 		Matrix4 WV;
 		Matrix4 InverseProj;
 		Vector3[] vertices;
-		Mesh mesh;
+		MeshElement mesh;
 		Vector3 cameraPosition;
 		Vector2 cameraOrientation;
 		Matrix4 world, view, projection; 
@@ -165,8 +167,8 @@ namespace tkglengine
 			GL.EnableVertexAttribArray(0);	
 			GL.EnableVertexAttribArray(1);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, buf);
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, mesh.Stride * sizeof(float), 0);			
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, mesh.Stride * sizeof(float), 12);
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, mesh.VertexDeclaration.Stride * sizeof(float), 0);			
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, mesh.VertexDeclaration.Stride * sizeof(float), 12);
 			GL.DrawArrays(BeginMode.Triangles, 0, mesh.VertexCount);			
 			
 			GL.DisableVertexAttribArray(0);
@@ -181,8 +183,8 @@ namespace tkglengine
 			
 			ColladaXML daeReader = new ColladaXML("collada_schema_1_4.xsd");
 			Console.WriteLine("Parsing File...");
-			daeReader.Parse("face.dae");
-			mesh = daeReader.Meshes[2];
+			daeReader.Parse(Paths.ModelPath + "face.dae");
+			mesh = daeReader.Mesh.Elements[2];
 			
 			GL.ClearColor(Color4.Wheat);
 			GL.Enable(EnableCap.CullFace);
