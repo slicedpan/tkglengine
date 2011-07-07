@@ -33,6 +33,7 @@ namespace tkglengine
 		int mouseY = 300;
 		MouseState lastState;
 		Vector2 lastDelta = Vector2.Zero;
+		const float mouseMultiplier = 2.0f;
 		
 		public TestWindow () : 
 			base (640, 480, GraphicsMode.Default, "test", GameWindowFlags.Default)
@@ -139,7 +140,7 @@ namespace tkglengine
 			}
 			*/
 			
-			cameraOrientation += lastDelta * 0.05f;
+			cameraOrientation += lastDelta * (float)e.Time * mouseMultiplier;
 			
 			lastState = state;
 			
@@ -164,15 +165,20 @@ namespace tkglengine
 			Vector3 lightpos = new Vector3((float)Math.Sin(counter), (float)Math.Cos(counter), 0.0f);
 			lightpos *= 10.0f;
 			GL.Uniform3(shader.uniforms["LightPos"], lightpos);
+			
+			/*
 			GL.EnableVertexAttribArray(0);	
 			GL.EnableVertexAttribArray(1);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, buf);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, buf2);
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, mesh.VertexDeclaration.Stride * sizeof(float), 0);			
 			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, mesh.VertexDeclaration.Stride * sizeof(float), 12);
-			GL.DrawArrays(BeginMode.Triangles, 0, mesh.VertexCount);			
+			GL.DrawElements(BeginMode.Triangles, mesh.IndexBuffer.Length, DrawElementsType.UnsignedShort, 0);
 			
 			GL.DisableVertexAttribArray(0);
-			GL.DisableVertexAttribArray(1);			
+			GL.DisableVertexAttribArray(1);			*/
+			
+			mesh.Draw();
 			
 			SwapBuffers();
 			
@@ -185,7 +191,7 @@ namespace tkglengine
 			Console.WriteLine("Parsing File...");
 			daeReader.Parse(Paths.ModelPath + "face.dae");
 			mesh = daeReader.Mesh.Elements[2];
-			
+			mesh.CreateGPUBuffers();
 			GL.ClearColor(Color4.Wheat);
 			GL.Enable(EnableCap.CullFace);
 			GL.Enable(EnableCap.DepthTest);
@@ -196,6 +202,9 @@ namespace tkglengine
 			GL.GenBuffers(1, out buf);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, buf);
 			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(mesh.VertexBuffer.Length * sizeof(float)), mesh.VertexBuffer, BufferUsageHint.StaticDraw);
+			GL.GenBuffers(2, out buf2);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, buf2);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(mesh.IndexBuffer.Length * sizeof(ushort)), mesh.IndexBuffer, BufferUsageHint.StaticDraw);
 			
 			CreateShaders();	
 			mouseX = X + (Width / 2);
@@ -207,7 +216,8 @@ namespace tkglengine
 			lastState = OpenTK.Input.Mouse.GetState();
 			
 			CursorVisible = false;
-			
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 			base.OnLoad (e);
 		}
 		void CreateBuffer()
